@@ -1,0 +1,182 @@
+{
+  "info": {
+    "name": "Digital Notice Board API",
+    "_postman_id": "dnb-142-2026",
+    "description": "REST API collection for Case Study 142 - Digital Notice Board System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "noticeId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"New Student\", \"email\": \"newstudent@example.com\", \"password\": \"password123\"}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json.token) pm.collectionVariables.set('token', json.token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"staff@example.com\", \"password\": \"password123\"}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notices",
+      "item": [
+        {
+          "name": "Get All Notices",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notices?sort=-postedDate"
+          }
+        },
+        {
+          "name": "Filter Academic Notices",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notices?category=academic&sort=-postedDate"
+          }
+        },
+        {
+          "name": "Filter Event Notices",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notices?category=event&sort=-postedDate"
+          }
+        },
+        {
+          "name": "Filter Exam Notices",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notices?category=exam&sort=-postedDate"
+          }
+        },
+        {
+          "name": "Create Notice",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"New Notice\", \"content\": \"This is a sample notice created through the API.\", \"category\": \"academic\"}"
+            },
+            "url": "{{baseUrl}}/notices"
+          }
+        },
+        {
+          "name": "Get Notice By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notices/{{noticeId}}"
+          }
+        },
+        {
+          "name": "Update Notice",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"Updated Notice Title\", \"content\": \"Updated notice content.\", \"category\": \"event\"}"
+            },
+            "url": "{{baseUrl}}/notices/{{noticeId}}"
+          }
+        },
+        {
+          "name": "Delete Notice",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{baseUrl}}/notices/{{noticeId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
